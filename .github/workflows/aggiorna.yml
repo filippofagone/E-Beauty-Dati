@@ -19,7 +19,7 @@ jobs:
           python-version: "3.12"
 
       - name: Installa le librerie
-       run: pip install pytrends pandas "urllib3<2"
+        run: pip install pytrends pandas "urllib3<2"
 
       - name: Raccogli i dati da Google Trends
         run: python raccogli.py
