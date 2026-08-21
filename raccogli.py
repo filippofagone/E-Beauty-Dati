@@ -56,7 +56,7 @@ def main():
         sys.exit("Manca pytrends: pip install pytrends")
 
     termini = json.loads((QUI / "termini.json").read_text(encoding="utf-8"))
-    pytrends = TrendReq(hl="it-IT", tz=-60, timeout=(10, 30), retries=2, backoff_factor=0.5)
+        pytrends = TrendReq(hl="it-IT", tz=-60, timeout=(10, 30))
 
     serie = {}
     media_ancora = None
