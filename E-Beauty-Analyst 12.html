@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>E-Beauty Analyst</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --inchiostro:#363636; --carta:#F4F5F2; --bianco:#fff;
+  --pigmento:#A2C042; --verde:#6E8A22; --ambra:#8A8A90; --grigio:#8B8B92;
+  --linea:#E0E1DD;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--carta);color:var(--inchiostro);
+     font-family:'Inter Tight',system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.5}
+h1,h2,h3{font-family:'Bricolage Grotesque','Inter Tight',sans-serif;letter-spacing:-.02em;margin:0}
+h1{font-weight:800;font-size:2.3rem;line-height:1.05}
+h2{font-weight:700;font-size:1.25rem;margin-bottom:.6rem}
+h3{font-weight:600;font-size:.95rem}
+.wrap{max-width:1240px;margin:0 auto;padding:26px 22px 80px}
+.occhiello{font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.16em;
+     text-transform:uppercase;color:var(--grigio);margin-bottom:.4rem}
+header{border-bottom:2px solid var(--inchiostro);padding-bottom:18px;margin-bottom:20px}
+.testata{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.sceltaarea{display:flex;align-items:center;gap:8px}
+.sceltaarea label{font-family:'IBM Plex Mono',monospace;font-size:.66rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--grigio)}
+.marchio{display:flex;align-items:center;gap:14px}
+.puntoverde{width:9px;height:9px;border-radius:50%;background:var(--pigmento);flex:none;margin-right:2px}
+.marchio-testo .riga1{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
+  font-size:1.7rem;letter-spacing:.13em;color:var(--inchiostro);
+  display:flex;align-items:center;line-height:1.1}
+.marchio-testo .pallino{width:.32em;height:.32em;border-radius:50%;
+  background:var(--pigmento);margin:0 .3em;flex:none}
+.marchio-testo .verde{color:var(--pigmento);margin-left:.45em;font-weight:600;letter-spacing:.3em}
+.marchio-testo .riga2{font-family:'IBM Plex Mono',monospace;font-size:.66rem;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--grigio);margin-top:4px}
+@media(max-width:820px){.marchio-testo .riga1{font-size:1.15rem}}
+.sub{color:var(--grigio);margin-top:8px;max-width:62ch}
+
+.banda{padding:12px 16px;border-left:4px solid var(--pigmento);background:var(--bianco);
+     font-size:.87rem;margin-bottom:18px}
+.banda.ok{border-left-color:var(--verde)}
+.reg{padding:12px 16px;border-left:4px solid var(--ambra);background:#FAFAF7;font-size:.87rem;margin:12px 0}
+
+nav{display:flex;gap:2px;flex-wrap:wrap;margin-bottom:20px;border-bottom:1px solid var(--linea)}
+nav button{font:600 .88rem 'Inter Tight',sans-serif;background:none;border:0;padding:11px 16px;
+     cursor:pointer;color:var(--grigio);border-bottom:2px solid transparent;margin-bottom:-1px}
+nav button:hover{color:var(--inchiostro)}
+nav button[aria-selected="true"]{color:var(--inchiostro);border-bottom-color:var(--pigmento)}
+nav button:focus-visible{outline:2px solid var(--pigmento);outline-offset:-2px}
+
+.panel{display:none}.panel.on{display:block}
+.card{background:var(--bianco);border:1px solid var(--linea);padding:18px;margin-bottom:18px}
+.card .podio{margin:14px 0}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;
+     background:var(--linea);border:1px solid var(--linea);margin-bottom:18px}
+.kpi{background:var(--bianco);padding:14px 16px}
+.kpi .v{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:1.7rem;line-height:1.1}
+.kpi .l{font-size:.66rem;letter-spacing:.09em;text-transform:uppercase;color:var(--grigio);margin-top:3px}
+
+table{width:100%;border-collapse:collapse;font-size:.83rem}
+th{text-align:left;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--grigio);
+   padding:8px 9px;border-bottom:1px solid var(--linea);position:sticky;top:0;background:var(--bianco);cursor:pointer;white-space:nowrap}
+th:hover{color:var(--inchiostro)}
+td{padding:7px 9px;border-bottom:1px solid #F1F2EE}
+td.num{font-family:'IBM Plex Mono',monospace;text-align:right}
+tbody tr:hover{background:#FAFBF8}
+.scroll{max-height:460px;overflow:auto}
+.pill{display:inline-block;padding:2px 8px;font-size:.72rem;font-weight:500;border-radius:2px}
+.minibar{display:inline-block;width:54px;height:7px;background:#EBECE8;margin-right:7px;vertical-align:middle}
+.minibar span{display:block;height:100%;background:#A2C042}
+
+select,input[type=text],input[type=number]{font:inherit;font-size:.87rem;padding:7px 9px;
+     border:1px solid var(--linea);background:var(--bianco);color:var(--inchiostro)}
+input[type=number]{width:72px;font-family:'IBM Plex Mono',monospace;text-align:right}
+label.ck{display:inline-flex;align-items:center;gap:7px;font-size:.85rem;cursor:pointer}
+button.act{font:600 .85rem 'Inter Tight',sans-serif;padding:9px 16px;border:1px solid var(--inchiostro);
+     background:var(--inchiostro);color:#fff;cursor:pointer}
+button.act.sec{background:none;color:var(--inchiostro)}
+button.act:hover{opacity:.85}
+.controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+
+.drop{border:2px dashed var(--linea);padding:26px;text-align:center;color:var(--grigio);
+     font-size:.87rem;background:var(--bianco);cursor:pointer;transition:.15s}
+.drop:hover,.drop.over{border-color:var(--pigmento);color:var(--inchiostro);background:#F6F9EC}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:820px){
+  .cols{grid-template-columns:1fr}
+  .wrap{padding:16px 12px 60px}
+  .logo-e{height:38px}
+  .marchio-testo .riga1{font-size:1.05rem}
+  nav button{padding:9px 10px;font-size:.8rem}
+  .kpi .v{font-size:1.25rem}
+  .card{padding:14px 12px}
+  .scroll{overflow-x:auto}
+  .scroll table{min-width:640px}
+  .segmenti button{padding:8px 12px;font-size:.8rem}
+  .controls{gap:8px}
+}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.logo-e{height:52px;width:auto;flex:none}
+.mono{font-family:'IBM Plex Mono',monospace}
+.small{font-size:.8rem;color:var(--grigio)}
+code{font-family:'IBM Plex Mono',monospace;font-size:.85em;background:#EBECE8;padding:1px 5px}
+.blocco{margin-bottom:18px}
+.segmenti{display:flex;gap:2px;margin-bottom:18px;background:var(--bianco);
+  border:1px solid var(--linea);padding:4px;width:fit-content;max-width:100%;flex-wrap:wrap}
+.segmenti button{font:600 .88rem 'Inter Tight',sans-serif;border:0;background:none;
+  padding:9px 18px;cursor:pointer;color:var(--grigio)}
+.segmenti button[aria-selected="true"]{background:var(--inchiostro);color:#fff}
+.segmenti button:hover:not([aria-selected="true"]){color:var(--inchiostro)}
+.intestarea{display:flex;align-items:baseline;gap:12px;border-bottom:2px solid var(--inchiostro);
+  padding-bottom:8px;margin:26px 0 14px}
+.intestarea:first-child{margin-top:0}
+.intestarea h2{margin:0}
+.intestarea .dove{font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--grigio)}
+.chip{display:inline-block;padding:4px 10px;margin:3px 6px 3px 0;background:#F6F9EC;
+  border:1px solid var(--pigmento);font-size:.82rem}
+.chip b{color:#6E8A22}
+.podio{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:18px}
+.scelta{background:var(--bianco);border:1px solid var(--linea);border-top:4px solid var(--pigmento);padding:20px}
+.scelta .pos{font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--grigio)}
+.scelta .nome{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:1.35rem;
+  margin:6px 0 10px;line-height:1.15}
+.scelta .perche{font-size:.9rem;margin:0 0 14px}
+.scelta .dati{display:flex;gap:18px;border-top:1px solid var(--linea);padding-top:12px;font-size:.78rem}
+.scelta .dati b{font-family:'IBM Plex Mono',monospace;font-size:1.05rem;display:block;font-weight:600}
+.scelta .dati span{color:var(--grigio);font-size:.68rem;text-transform:uppercase;letter-spacing:.06em}
+.avviso{font-size:.82rem;color:#7A6A2E;background:#FAFAF7;border-left:3px solid var(--ambra);
+  padding:8px 12px;margin-top:12px}
+.log{font-family:'IBM Plex Mono',monospace;font-size:.76rem;background:var(--inchiostro);color:#C8D4DE;
+     padding:12px;max-height:180px;overflow:auto;white-space:pre-wrap;margin-top:12px;display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="testata">
+  <div class="marchio">
+    <img class="logo-e" src="data:image/png;base64,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" alt="E">
+    <span class="puntoverde" aria-hidden="true"></span>
+    <div class="marchio-testo">
+      <div class="riga1">BEAUTY <span class="verde">ANALYST</span></div>
+    </div>
+  </div>
+  <div class="sceltaarea">
+    <label for="selArea">Area</label>
+    <select id="selArea">
+      <option value="IT">Italia</option>
+      <option value="EU">Europa</option>
+      <option value="MONDO">Globale</option>
+    </select>
+  </div>
+  </div>
+</header>
+
+<div id="banda" class="banda"></div>
+
+<nav role="tablist">
+  <button role="tab" aria-selected="true" data-t="risposta">Cosa fare adesso</button>
+  <button role="tab" aria-selected="false" data-t="aree">Italia &middot; Europa &middot; Mondo</button>
+  <button role="tab" aria-selected="false" data-t="mappa">Tutti gli attivi</button>
+  <button role="tab" aria-selected="false" data-t="scheda">Scheda attivo</button>
+  <button role="tab" aria-selected="false" data-t="cluster">Famiglie</button>
+  <button role="tab" aria-selected="false" data-t="dati">Dati</button>
+</nav>
+
+<!-- ========================================================= RISPOSTA -->
+<section class="panel on" id="p-risposta">
+  <div class="controls" style="justify-content:flex-end">
+    <button class="act sec" id="btnStampa">Stampa il report settimanale</button>
+  </div>
+  <div id="verdetto"></div>
+  <div class="card" style="text-align:center">
+    <p class="small" style="margin:0 0 12px">Vuoi la classifica completa di tutti gli attivi monitorati?</p>
+    <button class="act" onclick="tab('mappa')">Apri la classifica</button>
+  </div>
+</section>
+
+<!-- ============================================================== AREE -->
+<section class="panel" id="p-aree">
+  <div class="segmenti" id="segAree" role="tablist"></div>
+  <div id="ondecomuni"></div>
+  <div id="sezioniAree"></div>
+</section>
+
+<!-- ============================================================ MAPPA -->
+<section class="panel" id="p-mappa">
+  <div class="controls">
+    <select id="fSettore"><option value="">Estetica e Fitness</option><option value="estetica">Solo Estetica</option><option value="fitness">Solo Fitness</option></select>
+    <select id="fCluster"><option value="">Tutte le famiglie</option></select>
+    <label class="ck"><input type="checkbox" id="fReg"> Escludi attivi con criticita' regolatorie</label>
+  </div>
+  <div class="kpis" id="kpis"></div>
+  <div class="card">
+    <h2>Classifica completa</h2>
+    <p class="small">Clicca le intestazioni per riordinare. La colonna "In sintesi" dice
+      subito come leggere ogni attivo.</p>
+    <div class="scroll"><table id="tabella"><thead></thead><tbody></tbody></table></div>
+  </div>
+</section>
+
+<!-- =========================================================== SCHEDA -->
+<section class="panel" id="p-scheda">
+  <div class="controls"><select id="selAttivo"></select></div>
+  <div class="kpis" id="kpiAttivo"></div>
+  <div id="regAttivo"></div>
+  <div class="card"><h2>Com'e' andata negli ultimi 5 anni</h2>
+    <p class="small">La linea verde e' la tendenza di fondo; quella chiara il dato settimana per settimana.</p>
+    <div id="serie"></div></div>
+  <div class="cols">
+    <div class="card"><h2>In che mese conviene lanciarlo</h2>
+      <p class="small">Barre verdi = mesi in cui la gente lo cerca di piu'.</p><div id="stagione"></div>
+      <p class="small" id="notaStagione" style="margin-bottom:0"></p></div>
+    <div class="card"><h2>Perche' ha questo punteggio</h2>
+      <p class="small">Le quattro leve, da 0 a 100. Piu' la barra e' lunga, piu' quella leva spinge.</p>
+      <div id="scomposizione"></div></div>
+  </div>
+</section>
+
+<!-- ========================================================== CLUSTER -->
+<section class="panel" id="p-cluster">
+  <div class="card"><h2>Quali famiglie di prodotti promettono di piu'</h2>
+    <p class="small">Ogni barra e' una famiglia (es. tutti gli anti-macchia insieme).
+      Una famiglia forte vale piu' di un singolo prodotto forte: una linea si costruisce a famiglie.</p>
+    <div id="clusterChart"></div>
+    <p class="small" style="margin-bottom:0">Un cluster forte conta piu' di un singolo attivo forte:
+      una linea si compra intera, non a referenza singola.</p></div>
+  <div class="card"><div class="scroll"><table id="tabCluster"><thead></thead><tbody></tbody></table></div></div>
+</section>
+
+<!-- ============================================================= DATI -->
+<section class="panel" id="p-dati">
+
+  <div class="card">
+    <h2>0. Aggiornamento automatico</h2>
+    <p class="small">Se hai attivato la raccolta automatica su GitHub, incolla qui l'indirizzo
+      del file <code>dati.json</code>. Da quel momento l'app si aggiorna da sola a ogni apertura
+      e i due riquadri qui sotto non ti servono piu'.</p>
+    <div class="controls" style="margin-bottom:0">
+      <input type="text" id="fonteUrl" placeholder="https://raw.githubusercontent.com/..." style="flex:1;min-width:320px">
+      <button class="act" id="salvaFonte">Collega</button>
+      <button class="act sec" id="aggiornaOra">Aggiorna adesso</button>
+    </div>
+    <p class="small" id="statoFonte" style="margin:10px 0 0"></p>
+  </div>
+
+  <div class="card">
+    <h2>1. Domanda di ricerca &mdash; da Google Trends</h2>
+    <p class="small">Vai su <span class="mono">trends.google.it</span>, imposta Italia e "ultimi 5 anni",
+      poi scarica il CSV del grafico "Interesse nel tempo". Ripeti per gruppi di 5 termini.</p>
+    <p class="small"><b>Regola importante:</b> in ogni gruppo metti sempre
+      <code>acido ialuronico viso</code> piu' altri quattro termini. Google normalizza ogni ricerca
+      a 100 sul termine piu' alto di quel gruppo, quindi senza un termine comune che fa da metro
+      la classifica dei piu' ricercati sarebbe falsa. L'app usa quel termine per riallineare tutto.</p>
+    <div class="drop" id="dropTrends">Trascina qui il CSV di Google Trends, oppure clicca per scegliere il file</div>
+    <input type="file" id="fileTrends" accept=".csv" multiple hidden>
+  </div>
+
+  <div class="card">
+    <h2>2. Domanda interna &mdash; la tua</h2>
+    <p class="small">Il dato piu' importante e l'unico che nessun concorrente puo' copiare.
+      CSV con intestazione <code>term,month,requests,quotes</code> &mdash; il mese in formato <code>2026-06</code>.
+      I preventivi pesano il triplo delle richieste.</p>
+    <div class="drop" id="dropInterna">Trascina qui il CSV delle tue richieste</div>
+    <input type="file" id="fileInterna" accept=".csv" hidden>
+    <p style="margin-bottom:0"><button class="act sec" id="scaricaModello">Scarica il modello CSV</button></p>
+  </div>
+
+  <div class="card">
+    <h2>3. Saturazione &mdash; da compilare a mano</h2>
+    <p class="small">Quanti distributori offrono gia' quell'attivo in Italia. Non esiste una fonte automatica:
+      mezz'ora a trimestre, ma e' la variabile che ribalta la classifica piu' spesso.</p>
+    <div class="scroll" style="max-height:300px"><table id="tabSat"><thead></thead><tbody></tbody></table></div>
+  </div>
+
+  <div class="card">
+    <h2>Salvataggio</h2>
+    <p class="small">I dati restano nel browser. Esporta un backup prima di cambiare computer
+      o svuotare la cronologia.</p>
+    <div class="controls" style="margin-bottom:0">
+      <button class="act" id="esporta">Esporta backup</button>
+      <button class="act sec" id="importa">Importa backup</button>
+      <button class="act sec" id="pulisci">Cancella i dati dimostrativi</button>
+      <button class="act sec" id="ricarica">Ricarica i dati dimostrativi</button>
+    </div>
+    <input type="file" id="fileBackup" accept=".json" hidden>
+    <div class="log" id="log"></div>
+  </div>
+
+</section>
+</div>
+
+<div id="report" aria-hidden="true"></div>
+
+<style>
+#report{display:none}
+@page{margin:0}
+@media print{
+  body *{visibility:hidden}
+  #report, #report *{visibility:visible}
+  #report{display:block;position:absolute;left:0;top:0;width:100%;
+    box-sizing:border-box;padding:13mm 15mm 15mm;
+    font-family:'Inter Tight',Georgia,serif;color:#1a1a1a;font-size:11.5pt;line-height:1.55}
+  #report .rarea{padding-top:13mm}
+  #report .rarea.prima{padding-top:0}
+  #report .rtesta{display:flex;align-items:center;gap:12px;border-bottom:2.5pt solid #363636;
+    padding-bottom:10pt;margin-bottom:4pt}
+  #report .rtesta img{height:34pt}
+  #report .rtitolo{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:17pt;letter-spacing:.08em}
+  #report .rdata{font-size:9pt;color:#666;margin-bottom:14pt}
+  #report .rarea{page-break-before:always;padding-top:6pt}
+  #report .rarea.prima{page-break-before:auto}
+  #report h2{font-family:'Bricolage Grotesque',sans-serif;font-size:15pt;margin:10pt 0 1pt;
+    border-bottom:1.5pt solid #363636;padding-bottom:3pt}
+  #report .rdove{font-size:8.5pt;letter-spacing:.12em;text-transform:uppercase;color:#777;margin:0 0 8pt}
+  #report h3{font-family:'Bricolage Grotesque',sans-serif;font-size:11.5pt;margin:12pt 0 4pt;
+    text-transform:uppercase;letter-spacing:.06em}
+  #report .rvoce{margin:0 0 9pt;page-break-inside:avoid}
+  #report .rvoce b.nome{font-size:12pt}
+  #report .rlancio{color:#3d5210}
+  #report .rreg{font-size:9.5pt;color:#7a5a00}
+  #report .rnota{margin-top:14pt;padding-top:6pt;border-top:.75pt solid #bbb;font-size:8.5pt;color:#666}
+  #report .rdemo{font-weight:700;border:2pt solid #999;padding:6pt 10pt;margin:8pt 0}
+}
+</style>
+
+<script>
+"use strict";
+
+/* ============================================================ TASSONOMIA */
+const CLUSTERS = {
+  rigenerativi_k:"Rigenerativi / K-beauty", antiage:"Anti-age classici",
+  barriera:"Barriera & microbioma", discromie:"Discromie & uniformita'",
+  esfolianti:"Esfolianti & texture", idratazione:"Idratazione / glass skin",
+  fotoprotezione:"Fotoprotezione", corpo:"Corpo & inestetismi",
+  post_trattamento:"Post-trattamento (cabina)", protocolli:"Protocolli di cabina",
+  recupero:"Recupero muscolare", tono_sport:"Tonificazione & modellamento",
+  comfort_sport:"Comfort & igiene sportiva",
+  occhi_labbra:"Occhi & labbra", tricologia:"Cuoio capelluto & capelli"
+};
+const SETTORI={estetica:"Estetica", fitness:"Fitness"};
+
+const K = (term,cluster,device,stage,reg)=>({term,cluster,device,stage,reg:reg||null});
+const TAXONOMY = [
+  K("pdrn","rigenerativi_k","Hydronium","emergente","Borderline: spesso classificato come dispositivo medico se iniettabile. In cosmetico topico verificare claim e notifica CPNP."),
+  K("polinucleotidi","rigenerativi_k","Hydronium","emergente","Stesso perimetro del PDRN. Attenzione ai claim rigenerativi."),
+  K("esosomi","rigenerativi_k","Hydronium","emergente","CRITICO: uso estetico contestato o vietato in piu' giurisdizioni. Non trattare l'esclusiva senza parere regolatorio scritto."),
+  K("spicule","rigenerativi_k","Vision","emergente","Microspicole di spugna: profilo di irritazione. Serve patch test documentato."),
+  K("fattori di crescita viso","rigenerativi_k",null,"emergente"),
+  K("cosmeceutico coreano","rigenerativi_k",null,"crescita"),
+  K("retinolo","antiage",null,"maturo"),
+  K("retinaldeide","antiage",null,"crescita"),
+  K("bakuchiol","antiage",null,"crescita"),
+  K("peptidi viso","antiage","Vision","crescita"),
+  K("collagene viso","antiage",null,"maturo"),
+  K("nad+ pelle","antiage",null,"emergente"),
+  K("ceramidi","barriera",null,"crescita"),
+  K("niacinamide","barriera","Hydronium","maturo"),
+  K("ectoina","barriera",null,"emergente"),
+  K("centella asiatica","barriera","EpilNovus Pro","crescita"),
+  K("barriera cutanea","barriera","Vision","crescita"),
+  K("microbioma pelle","barriera",null,"emergente"),
+  K("vitamina c viso","discromie","Hydronium","maturo"),
+  K("acido tranexamico","discromie","Vision","crescita"),
+  K("acido azelaico","discromie",null,"crescita"),
+  K("alfa arbutina","discromie",null,"crescita"),
+  K("melasma","discromie","Vision","crescita"),
+  K("macchie viso rimedi","discromie","Vision","maturo"),
+  K("acido mandelico","esfolianti","Hydronium","crescita"),
+  K("acido glicolico","esfolianti","Hydronium","maturo"),
+  K("acido salicilico","esfolianti","Hydronium","maturo"),
+  K("pha esfoliante","esfolianti",null,"emergente"),
+  K("pori dilatati","esfolianti","Hydronium","maturo"),
+  K("acido ialuronico viso","idratazione","Hydronium","maturo"),
+  K("skinbooster","idratazione","Hydronium","crescita"),
+  K("acido poliglutammico","idratazione",null,"emergente"),
+  K("glass skin","idratazione","Hydronium","crescita"),
+  K("spf viso","fotoprotezione",null,"crescita"),
+  K("protezione solare viso","fotoprotezione","Vision","maturo"),
+  K("filtri solari coreani","fotoprotezione",null,"crescita","Alcuni filtri UV approvati in Corea non lo sono in UE. Verificare INCI sull'Allegato VI del Reg. CE 1223/2009."),
+  K("cellulite","corpo","Multishape","maturo"),
+  K("ritenzione idrica","corpo","Multishape","maturo"),
+  K("smagliature","corpo","Iridium","maturo"),
+  K("rassodante corpo","corpo","Multishape","maturo"),
+  K("drenante gambe","corpo","Multishape","crescita"),
+  K("dopo il laser pelle","post_trattamento","EpilNovus Pro","crescita"),
+  K("lenitivo post peeling","post_trattamento","Hydronium","crescita"),
+  K("post needling cosa mettere","post_trattamento","Mirus","emergente"),
+  K("pelle sensibilizzata rimedi","post_trattamento","EpilNovus Pro","crescita"),
+  K("idroabrasione","protocolli","Hydronium","crescita"),
+  K("microneedling","protocolli","Mirus","maturo"),
+  K("dermaplaning","protocolli",null,"crescita"),
+  K("led terapia viso","protocolli","Iridium Pro","crescita"),
+  K("analisi della pelle","protocolli","Vision","crescita")
+];
+TAXONOMY.push(
+  K("bava di lumaca","rigenerativi_k",null,"crescita"),
+  K("peptidi di rame","rigenerativi_k",null,"emergente"),
+  K("cica crema","rigenerativi_k",null,"crescita"),
+  K("astaxantina","antiage",null,"emergente"),
+  K("coenzima q10 viso","antiage",null,"maturo"),
+  K("skin longevity","antiage",null,"emergente"),
+  K("skincare uomo","antiage",null,"crescita"),
+  K("pantenolo","barriera",null,"crescita"),
+  K("squalano","barriera",null,"crescita"),
+  K("skin cycling","barriera",null,"crescita"),
+  K("skin flooding","barriera",null,"emergente"),
+  K("acido kojico","discromie",null,"crescita"),
+  K("glutatione pelle","discromie",null,"emergente"),
+  K("acido lattico","esfolianti",null,"crescita"),
+  K("peeling enzimatico","esfolianti","Hydronium","crescita"),
+  K("acne ormonale","esfolianti",null,"crescita"),
+  K("essence viso","idratazione",null,"crescita"),
+  K("contorno occhi occhiaie","occhi_labbra",null,"maturo"),
+  K("patch occhi","occhi_labbra",null,"crescita"),
+  K("siero ciglia","occhi_labbra",null,"crescita",
+    "I sieri ciglia con analoghi delle prostaglandine sono al confine col farmaco: verificare INCI e claim."),
+  K("lip oil","occhi_labbra",null,"crescita"),
+  K("caduta capelli donna","tricologia",null,"maturo"),
+  K("scalp care","tricologia",null,"crescita"),
+  K("brufoli schiena","corpo",null,"crescita"),
+  K("cheratosi pilare","corpo",null,"crescita"),
+  K("rassodante seno","corpo","E-Multishape","maturo"),
+  K("hydrafacial","protocolli","Hydronium","crescita",
+    "Hydrafacial e' un marchio registrato: lo monitoriamo come segnale di domanda del trattamento, non e' un attivo da formulare."),
+  K("radiofrequenza viso","protocolli",null,"crescita"),
+  K("ossigenoterapia viso","protocolli",null,"crescita")
+);
+TAXONOMY.forEach(k=>k.settore="estetica");
+
+const FITNESS=[
+  K("crema defaticante gambe","recupero","E-Press","crescita"),
+  K("arnica gel","recupero",null,"maturo"),
+  K("crema riscaldante muscoli","recupero",null,"maturo"),
+  K("ghiaccio spray","recupero",null,"maturo"),
+  K("olio massaggio sportivo","recupero","E-Press","crescita"),
+  K("magnesio spray","recupero",null,"emergente"),
+  K("collagene sport","recupero",null,"emergente"),
+  K("crema rassodante glutei","tono_sport","E-Multishape","crescita"),
+  K("crema tonificante addome","tono_sport","E-Slim Fit","crescita"),
+  K("crema termoattiva","tono_sport","Hydrobike","emergente"),
+  K("crema elasticizzante","tono_sport",null,"crescita"),
+  K("crema anti sfregamento","comfort_sport",null,"emergente"),
+  K("deodorante sport","comfort_sport",null,"crescita"),
+  K("crema piedi sportivi","comfort_sport",null,"crescita"),
+  K("recupero muscolare","recupero",null,"crescita"),
+  K("pistola massaggio muscolare","recupero",null,"crescita"),
+  K("sali di epsom","recupero",null,"crescita"),
+  K("elettroliti","recupero",null,"crescita"),
+  K("bagno di ghiaccio","recupero",null,"crescita"),
+  K("collagene da bere","recupero",null,"crescita",
+    "E' un integratore alimentare, non un cosmetico: regime normativo diverso (claim salute EFSA, notifica al Ministero)."),
+  K("crema cbd","recupero",null,"emergente",
+    "CBD topico ammesso in UE con restrizioni su origine e purezza dell'ingrediente: verificare INCI e normativa aggiornata."),
+  K("gambe pesanti","tono_sport","E-Press","crescita"),
+  K("pressoterapia","tono_sport","E-Press","crescita"),
+  K("sauna infrarossi","comfort_sport",null,"emergente"),
+  K("crema solare sport","comfort_sport",null,"crescita")
+];
+FITNESS.forEach(k=>k.settore="fitness");
+TAXONOMY.push(...FITNESS);
+
+const BY_TERM = Object.fromEntries(TAXONOMY.map(k=>[k.term,k]));
+const PESI = {volume:.20, velocita:.35, saturazione:.20, interna:.25};
+const COL = {"Finestra aperta":"#A2C042","Da presidiare":"#363636","Maturo in calo":"#A8A8AE","Marginale":"#D2D4CE"};
+const MESI = ["gen","feb","mar","apr","mag","giu","lug","ago","set","ott","nov","dic"];
+// Google Trends normalizza ogni ricerca a 100 sul termine piu' alto DI QUEL GRUPPO.
+// Per confrontare termini presi da CSV diversi serve un termine presente in tutti,
+// che fa da metro. Senza, la classifica "piu' ricercati" e' falsa.
+const ANCORA = "acido ialuronico viso";
+
+/* ================================================================ STATO */
+// trends: { term: [{w:"2026-01-05", v:42}, ...] }
+// interna: [{term, month, requests, quotes}]
+// sat: { term: n }
+let S = {trends:{}, aree:{}, area:"IT", interna:[], sat:{}, demo:true, fonte:""};
+const AREE_ETICHETTE = {IT:"Italia", EU:"Europa (Germania+Francia)", MONDO:"Globale"};
+
+function log(msg){const el=document.getElementById("log");el.style.display="block";
+  el.textContent += msg+"\n"; el.scrollTop = el.scrollHeight;}
+
+/* ======================================================== PERSISTENZA */
+async function salva(){
+  const dati = JSON.stringify(S);
+  try{
+    if(window.storage && window.storage.set){
+      await window.storage.set("ebeauty:stato", dati); return;
+    }
+  }catch(e){}
+  try{ localStorage.setItem("ebeauty:stato", dati); }catch(e){}
+}
+async function carica(){
+  try{
+    if(window.storage && window.storage.get){
+      const r = await window.storage.get("ebeauty:stato");
+      if(r && r.value){ S = JSON.parse(r.value); return true; }
+    }
+  }catch(e){}
+  try{
+    const v = localStorage.getItem("ebeauty:stato");
+    if(v){ S = JSON.parse(v); return true; }
+  }catch(e){}
+  return false;
+}
+
+/* ============================================================ DEMO */
+const CRESCITA={emergente:.36,crescita:.14,maturo:-.04};
+const BASE={emergente:7,crescita:30,maturo:80};
+const STAGIONE={corpo:[4,.45],fotoprotezione:[6,.70],discromie:[9,.30],esfolianti:[10,.20],
+  idratazione:[12,.20],barriera:[1,.25],rigenerativi_k:[11,.15],antiage:[11,.15],
+  post_trattamento:[7,.20],protocolli:[9,.25],
+  recupero:[1,.28],tono_sport:[4,.52],comfort_sport:[6,.34],
+  occhi_labbra:[11,.18],tricologia:[10,.32]};
+
+let _seed=7;
+function rnd(){_seed=(_seed*1664525+1013904223)%4294967296;return _seed/4294967296;}
+function gauss(){return (rnd()+rnd()+rnd()+rnd()-2)/1.1;}
+
+function generaTrendsDemo(seme){
+  _seed=seme;
+  const W=261, oggi=new Date(), trends={};
+  const start=new Date(oggi); start.setDate(start.getDate()-W*7);
+  start.setDate(start.getDate()-((start.getDay()+6)%7));
+
+  for(const kw of TAXONOMY){
+    const base=BASE[kw.stage]*(0.7+rnd()*0.65);
+    const g=CRESCITA[kw.stage]*(0.6+rnd()*0.8);
+    const [pm,amp]=STAGIONE[kw.cluster]||[6,.15];
+    const punti=[];
+    for(let w=0;w<W;w++){
+      const d=new Date(start); d.setDate(d.getDate()+w*7);
+      const anni=w/52;
+      const liv=base*Math.pow(1+g,anni);
+      const doy=(d-new Date(d.getFullYear(),0,0))/86400000;
+      const fase=(doy/365.25)*2*Math.PI, fp=((pm-0.5)/12)*2*Math.PI;
+      const stag=1+amp*Math.cos(fase-fp);
+      const val=Math.max(0,Math.min(100, liv*stag*(1+gauss()*0.09)));
+      punti.push({w:d.toISOString().slice(0,10), v:Math.round(val*10)/10});
+    }
+    trends[kw.term]=punti;
+  }
+  return trends;
+}
+
+function generaDemo(){
+  const aree={IT:generaTrendsDemo(7), EU:generaTrendsDemo(12), MONDO:generaTrendsDemo(21)};
+  const oggi=new Date();
+  _seed=7;
+  const interna=[], mesi=[];
+  for(let i=11;i>=0;i--){const d=new Date(oggi.getFullYear(),oggi.getMonth()-i,1);
+    mesi.push(d.toISOString().slice(0,7));}
+  for(const kw of TAXONOMY){
+    if(rnd()<0.35) continue;
+    const inten={emergente:1.2,crescita:2.6,maturo:1.8}[kw.stage];
+    mesi.forEach((m,i)=>{
+      const req=Math.max(0,Math.round(inten*(1+i/14)+gauss()*1.2));
+      if(!req) return;
+      interna.push({term:kw.term,month:m,requests:req,quotes:Math.round(req*0.28*rnd()*2)});
+    });
+  }
+
+  const sat={};
+  for(const kw of TAXONOMY){
+    const r={emergente:[0,4],crescita:[3,11],maturo:[9,24]}[kw.stage];
+    sat[kw.term]=Math.floor(r[0]+rnd()*(r[1]-r[0]+1));
+  }
+  return {trends:aree.IT, aree, area:"IT", interna, sat, demo:true, fonte:""};
+}
+
+/* ============================================================ CALCOLO */
+const media = a => a.length ? a.reduce((x,y)=>x+y,0)/a.length : 0;
+const mediana = a => {const s=[...a].sort((x,y)=>x-y); if(!s.length) return 0;
+  const m=Math.floor(s.length/2); return s.length%2 ? s[m] : (s[m-1]+s[m])/2;};
+
+function norm(vals){
+  const f=vals.filter(v=>isFinite(v));
+  const lo=Math.min(...f), hi=Math.max(...f);
+  return vals.map(v=>(!isFinite(v)||hi===lo)?50:(v-lo)/(hi-lo)*100);
+}
+
+function calcola(insieme){
+  insieme = insieme || S.trends;
+  const termini = Object.keys(insieme).filter(t=>BY_TERM[t]);
+  if(!termini.length) return [];
+
+  // domanda interna: ultimi 6 mesi presenti, preventivi x3
+  const mesi=[...new Set(S.interna.map(r=>r.month))].sort().slice(-6);
+  const internaMap={};
+  S.interna.filter(r=>mesi.includes(r.month)).forEach(r=>{
+    internaMap[r.term]=(internaMap[r.term]||0)+(+r.requests||0)+3*(+r.quotes||0);
+  });
+
+  const righe = termini.map(term=>{
+    const meta=BY_TERM[term];
+    const serie=[...insieme[term]].sort((a,b)=>a.w<b.w?-1:1);
+    const v=serie.map(p=>p.v);
+    const volume = v.length>=8 ? media(v.slice(-8)) : media(v);
+
+    let velYoy=NaN;
+    if(v.length>=65) velYoy = pct(media(v.slice(-13)), media(v.slice(-65,-52)));
+    let velQoq=NaN;
+    if(v.length>=26) velQoq = pct(media(v.slice(-13)), media(v.slice(-26,-13)));
+    if(!isFinite(velYoy)) velYoy = isFinite(velQoq) ? velQoq : 0;
+
+    return {term, cluster:meta.cluster, clusterLabel:CLUSTERS[meta.cluster],
+      device:meta.device, stage:meta.stage, reg:meta.reg, settore:meta.settore,
+      volume, velYoy, velQoq, settimane:v.length,
+      internaRaw:internaMap[term]||0,
+      competitors: (S.sat[term]===undefined||S.sat[term]===null) ? null : +S.sat[term]};
+  });
+
+  const satVals=righe.map(r=>r.competitors).filter(x=>x!==null);
+  const satMed=satVals.length?mediana(satVals):0;
+
+  const nV=norm(righe.map(r=>r.volume));
+  const nVel=norm(righe.map(r=>Math.min(r.velYoy,200)));
+  const nInt=norm(righe.map(r=>r.internaRaw));
+  const nSat=norm(righe.map(r=>r.competitors===null?satMed:r.competitors));
+
+  righe.forEach((r,i)=>{
+    r.sVolume=nV[i]; r.sVelocita=nVel[i]; r.sInterna=nInt[i]; r.sSaturazione=100-nSat[i];
+    r.opportunita=Math.round((r.sVolume*PESI.volume + r.sVelocita*PESI.velocita
+      + r.sSaturazione*PESI.saturazione + r.sInterna*PESI.interna)*10)/10;
+  });
+
+  const vMed=mediana(righe.map(r=>r.volume));
+  righe.forEach(r=>{
+    const alto=r.volume>=vMed, cresce=r.velYoy>0;
+    r.quadrante = alto&&cresce ? "Da presidiare" : (!alto&&cresce ? "Finestra aperta"
+      : (alto ? "Maturo in calo" : "Marginale"));
+  });
+
+  return righe.sort((a,b)=>b.opportunita-a.opportunita);
+}
+function pct(ora,prima){
+  // baseline sotto 1 trattata come 1: chi parte da zero conta come crescita
+  // forte ma non infinita, e le basi minuscole non producono percentuali folli
+  if(prima<=0 && ora<=0) return 0;
+  return (ora-prima)/Math.max(prima,1)*100;
+}
+
+function stagionalita(term, insieme){
+  const serie=(insieme||S.trends)[term]; if(!serie) return [];
+  const per=Array.from({length:12},()=>[]);
+  serie.forEach(p=>{const m=+p.w.slice(5,7)-1; if(m>=0&&m<12) per[m].push(p.v);});
+  const medie=per.map(a=>media(a));
+  const g=media(medie.filter(x=>x>0));
+  return medie.map(x=>g?x/g*100:0);
+}
+
+/* ============================================================= GRAFICI */
+const NS="http://www.w3.org/2000/svg";
+function el(t,a={},txt){const e=document.createElementNS(NS,t);
+  for(const k in a) e.setAttribute(k,a[k]); if(txt!=null) e.textContent=txt; return e;}
+
+function svgBase(w,h){const s=el("svg",{viewBox:`0 0 ${w} ${h}`,role:"img"});return s;}
+
+function lineChart(term){
+  const serie=[...(S.trends[term]||[])].sort((a,b)=>a.w<b.w?-1:1);
+  const W=980,H=300,M={t:16,r:16,b:36,l:46};
+  const s=svgBase(W,H); if(!serie.length) return s;
+  const v=serie.map(p=>p.v), n=v.length;
+  const y1=Math.max(...v)*1.08||100;
+  const X=i=>M.l+i/(n-1||1)*(W-M.l-M.r);
+  const Y=val=>H-M.b-val/y1*(H-M.t-M.b);
+  for(let i=0;i<=4;i++){const gy=y1*i/4;
+    s.appendChild(el("line",{x1:M.l,x2:W-M.r,y1:Y(gy),y2:Y(gy),stroke:"#EBECE8"}));
+    s.appendChild(el("text",{x:M.l-8,y:Y(gy)+4,"text-anchor":"end",class:"mono",
+      "font-size":10,fill:"#8B8B92"},Math.round(gy)));}
+  s.appendChild(el("polyline",{fill:"none",stroke:"#D2D4CE","stroke-width":1,
+    points:v.map((val,i)=>`${X(i)},${Y(val)}`).join(" ")}));
+  const roll=v.map((_,i)=>media(v.slice(Math.max(0,i-12),i+1)));
+  s.appendChild(el("polyline",{fill:"none",stroke:"#6E8A22","stroke-width":2.4,
+    "stroke-linejoin":"round",points:roll.map((val,i)=>`${X(i)},${Y(val)}`).join(" ")}));
+  const step=Math.ceil(n/6);
+  for(let i=0;i<n;i+=step)
+    s.appendChild(el("text",{x:X(i),y:H-12,"text-anchor":"middle",class:"mono",
+      "font-size":9.5,fill:"#8B8B92"},serie[i].w.slice(0,7)));
+  return s;
+}
+
+function barChart(labels,vals,colori,{W=460,H=250,fmt=v=>Math.round(v),linea=null}={}){
+  const M={t:14,r:16,b:30,l:40}, s=svgBase(W,H);
+  const max=Math.max(...vals,linea||0)*1.12||1;
+  const bw=(W-M.l-M.r)/vals.length;
+  const Y=v=>H-M.b-v/max*(H-M.t-M.b);
+  for(let i=0;i<=3;i++){const gy=max*i/3;
+    s.appendChild(el("line",{x1:M.l,x2:W-M.r,y1:Y(gy),y2:Y(gy),stroke:"#EBECE8"}));
+    s.appendChild(el("text",{x:M.l-7,y:Y(gy)+4,"text-anchor":"end",class:"mono",
+      "font-size":9.5,fill:"#8B8B92"},Math.round(gy)));}
+  vals.forEach((v,i)=>{
+    s.appendChild(el("rect",{x:M.l+i*bw+bw*0.16,y:Y(v),width:bw*0.68,
+      height:Math.max(0,H-M.b-Y(v)),fill:colori[i]}));
+    s.appendChild(el("text",{x:M.l+i*bw+bw/2,y:H-M.b+15,"text-anchor":"middle",
+      "font-size":9.5,fill:"#8B8B92"},labels[i]));
+  });
+  if(linea!=null) s.appendChild(el("line",{x1:M.l,x2:W-M.r,y1:Y(linea),y2:Y(linea),
+    stroke:"#8B8B92","stroke-dasharray":"3 4"}));
+  return s;
+}
+
+function barChartH(labels,vals,colori,{W=980,rowH=30}={}){
+  const M={t:8,r:60,b:26,l:210}, H=M.t+M.b+labels.length*rowH;
+  const s=svgBase(W,H), max=Math.max(...vals)*1.1||1;
+  const X=v=>M.l+v/max*(W-M.l-M.r);
+  labels.forEach((lab,i)=>{
+    const y=M.t+i*rowH;
+    s.appendChild(el("text",{x:M.l-10,y:y+rowH/2+4,"text-anchor":"end","font-size":11.5,
+      fill:"#363636"},lab));
+    s.appendChild(el("rect",{x:M.l,y:y+5,width:Math.max(1,X(vals[i])-M.l),
+      height:rowH-14,fill:colori[i]}));
+    s.appendChild(el("text",{x:X(vals[i])+8,y:y+rowH/2+4,class:"mono","font-size":10.5,
+      fill:"#8B8B92"},Math.round(vals[i])));
+  });
+  return s;
+}
+
+/* ================================================================ VISTE */
+let RIGHE=[];
+
+function passaFiltri(r){
+  const st=document.getElementById("fSettore").value;
+  const c=document.getElementById("fCluster").value;
+  const soloLibero=document.getElementById("fReg").checked;
+  return (!st||r.settore===st)&&(!c||r.cluster===c)&&(!soloLibero||!r.reg);
+}
+function filtrate(){ return RIGHE.filter(passaFiltri); }
+function righeArea(a){
+  const dati=(S.aree&&S.aree[a])||{};
+  if(!Object.keys(dati).length) return [];
+  return calcola(dati).filter(passaFiltri);
+}
+
+function disegnaBanda(){
+  const b=document.getElementById("banda");
+  if(S.demo){
+    b.className="banda";
+    b.innerHTML="<b>Dati dimostrativi.</b> I numeri che vedi sono generati artificialmente "+
+      "per collaudare i grafici. Non descrivono il mercato reale e non vanno usati per decidere. "+
+      "Vai nella scheda <b>Dati</b> e carica i CSV di Google Trends per sostituirli.";
+  }else{
+    const n=Object.keys(S.trends).length;
+    const dove=AREE_ETICHETTE[S.area]||S.area;
+    if(!n){
+      b.className="banda";
+      b.innerHTML=`<b>Nessun dato per l'area ${dove}.</b> La raccolta automatica la aggiunge `+
+        `al prossimo aggiornamento completo, oppure premi "Aggiorna adesso" nella scheda Dati.`;
+    }else{
+      b.className="banda ok";
+      b.innerHTML=`<b>Dati reali &middot; ${dove}.</b> ${n} attivi su ${TAXONOMY.length} monitorabili.`;
+    }
+  }
+}
+
+let ordCol="opportunita", ordDir=-1;
+function barretta(v){
+  const max=Math.max(...RIGHE.map(r=>r.volume))||1;
+  const pct=Math.round(v/max*100);
+  return `<span class="minibar"><span style="width:${pct}%"></span></span>${Math.round(v)}`;
+}
+
+function disegnaMappa(){
+  const R=filtrate();
+  const apri=R.filter(r=>r.quadrante==="Finestra aperta").length;
+  const vel=R.length?mediana(R.map(r=>r.velYoy)):0;
+  document.getElementById("kpis").innerHTML=[
+    ["Attivi monitorati",R.length],["Da prendere ora",apri],
+    ["Crescita tipica",(vel>0?"+":"")+Math.round(vel)+"%"],
+    ["Da verificare (norme UE)",R.filter(r=>r.reg).length]
+  ].map(([l,v])=>`<div class="kpi"><div class="v">${v}</div><div class="l">${l}</div></div>`).join("");
+
+  const cols=[["term","Attivo"],["settore","Settore"],
+    ["volume","Quanto e' cercato"],["velYoy","Crescita in un anno"],["competitors","Concorrenti"],
+    ["opportunita","Punteggio"],["quadrante","In sintesi"]];
+  const t=document.getElementById("tabella");
+  t.querySelector("thead").innerHTML="<tr>"+cols.map(([k,l])=>
+    `<th data-k="${k}">${l}${ordCol===k?(ordDir<0?" ↓":" ↑"):""}</th>`).join("")+"</tr>";
+  const sorted=[...R].sort((a,b)=>{
+    const x=a[ordCol],y=b[ordCol];
+    if(x===null) return 1; if(y===null) return -1;
+    return (typeof x==="string"? x.localeCompare(y) : x-y)*ordDir;});
+  const SPIEGA={"Finestra aperta":"Cresce, pochi la offrono: da prendere ora",
+    "Da presidiare":"Richiestissima ma affollata: si compete sul prezzo",
+    "Maturo in calo":"Vende ancora, ma sta scendendo",
+    "Marginale":"Poca domanda: lasciar perdere"};
+  t.querySelector("tbody").innerHTML=sorted.map(r=>`<tr>
+    <td><b>${r.term}</b>${r.reg?' <span title="Criticita&#39; regolatoria: apri la scheda attivo">&#9888;</span>':""}</td>
+    <td>${SETTORI[r.settore]||"—"}</td>
+    <td class="num">${barretta(r.volume)}</td>
+    <td class="num" style="color:${r.velYoy>0?"#6E8A22":"#8B8B92"}">${r.velYoy>0?"&#9650; +":"&#9660; "}${Math.round(r.velYoy)}%</td>
+    <td class="num">${r.competitors===null?"—":r.competitors}</td>
+    <td class="num"><b>${r.opportunita}</b></td>
+    <td><span class="pill" style="background:${COL[r.quadrante]}22;color:#363636">${SPIEGA[r.quadrante]}</span></td>
+  </tr>`).join("");
+  t.querySelectorAll("th").forEach(th=>th.onclick=()=>{
+    const k=th.dataset.k;
+    if(ordCol===k) ordDir*=-1; else {ordCol=k; ordDir=-1;}
+    disegnaMappa();});
+}
+
+function disegnaScheda(){
+  const sel=document.getElementById("selAttivo");
+  const R=filtrate();
+  if(!R.length) return;
+  if(!sel.options.length || !R.some(r=>r.term===sel.value)){
+    sel.innerHTML=R.map(r=>`<option value="${r.term}">${r.term}</option>`).join("");
+  }
+  const r=R.find(x=>x.term===sel.value)||R[0];
+  sel.value=r.term;
+
+  document.getElementById("kpiAttivo").innerHTML=
+    `<div class="kpi" style="grid-column:1/-1"><div class="l">In una frase</div>
+     <div style="font-size:1rem;margin-top:4px">${frase(r)}</div></div>`+[
+    ["Punteggio",r.opportunita],["Quanto e' cercato",Math.round(r.volume)],
+    ["Crescita in un anno",(r.velYoy>0?"+":"")+Math.round(r.velYoy)+"%"],
+    ["Concorrenti",r.competitors===null?"n.d.":r.competitors]
+  ].map(([l,v])=>`<div class="kpi"><div class="v">${v}</div><div class="l">${l}</div></div>`).join("");
+
+  document.getElementById("regAttivo").innerHTML =
+    (r.reg?`<div class="reg"><b>Nota regolatoria.</b> ${r.reg}</div>`:"") +
+    (r.device?`<p class="small">Alimenta il protocollo di <b>${r.device}</b></p>`:"");
+
+  const se=document.getElementById("serie"); se.innerHTML=""; se.appendChild(lineChart(r.term));
+
+  const prof=stagionalita(r.term);
+  const st=document.getElementById("stagione"); st.innerHTML="";
+  st.appendChild(barChart(MESI,prof,prof.map(v=>v>=105?"#8FAE35":"#D2D4CE"),{linea:100}));
+  const picco=prof.indexOf(Math.max(...prof));
+  document.getElementById("notaStagione").textContent=
+    `Picco a ${MESI[picco]}. Il materiale commerciale va pronto circa 8 settimane prima.`;
+
+  const sc=document.getElementById("scomposizione"); sc.innerHTML="";
+  sc.appendChild(barChartH(["Quanto e' cercato","Quanto cresce","Quanto e' libero il campo","Quanto lo chiedono a te"],
+    [r.sVolume,r.sVelocita,r.sSaturazione,r.sInterna],
+    ["#8B8B92","#8FAE35","#363636","#363636"],{W:460,rowH:34}));
+}
+
+function disegnaCluster(){
+  const R=filtrate(), map={};
+  R.forEach(r=>{(map[r.clusterLabel]=map[r.clusterLabel]||[]).push(r);});
+  const agg=Object.entries(map).map(([lab,rs])=>({lab,n:rs.length,
+    volume:media(rs.map(r=>r.volume)), vel:media(rs.map(r=>r.velYoy)),
+    opp:media(rs.map(r=>r.opportunita)), req:rs.reduce((a,r)=>a+r.internaRaw,0)}))
+    .sort((a,b)=>b.opp-a.opp);
+  const med=mediana(agg.map(a=>a.opp));
+  const c=document.getElementById("clusterChart"); c.innerHTML="";
+  c.appendChild(barChartH(agg.map(a=>a.lab),agg.map(a=>a.opp),
+    agg.map(a=>a.opp>med?"#8FAE35":"#D2D4CE")));
+  const t=document.getElementById("tabCluster");
+  t.querySelector("thead").innerHTML="<tr><th>Cluster</th><th>Attivi</th><th>Volume</th>"+
+    "<th>Velocita'</th><th>Opportunita'</th><th>Richieste tue</th></tr>";
+  t.querySelector("tbody").innerHTML=agg.map(a=>`<tr><td><b>${a.lab}</b></td>
+    <td class="num">${a.n}</td><td class="num">${Math.round(a.volume)}</td>
+    <td class="num">${a.vel>0?"+":""}${Math.round(a.vel)}%</td>
+    <td class="num"><b>${a.opp.toFixed(1)}</b></td><td class="num">${a.req}</td></tr>`).join("");
+}
+
+const ORDINE_AREE=["IT","EU","MONDO"];
+const NOMI_AREE={IT:"Italia", EU:"Europa", MONDO:"Globale"};
+const SOTTO_AREE={IT:"mercato nazionale", EU:"media Germania + Francia", MONDO:"tutto il mondo"};
+
+let areaScelta="IT";
+
+function disegnaAree(){
+  const seg=document.getElementById("segAree");
+  const cont=document.getElementById("sezioniAree");
+  const onde=document.getElementById("ondecomuni");
+  cont.innerHTML=""; onde.innerHTML="";
+
+  const perArea={};
+  ORDINE_AREE.forEach(a=>{ const R=righeArea(a); if(R.length) perArea[a]=R; });
+  const attive=Object.keys(perArea);
+
+  // pulsanti: le tre aree piu', se ha senso, "In comune"
+  const voci=ORDINE_AREE.map(a=>[a,NOMI_AREE[a]]);
+  if(attive.length>=2) voci.push(["COMUNE","In comune"]);
+  if(areaScelta!=="COMUNE" && !voci.some(v=>v[0]===areaScelta)) areaScelta="IT";
+  seg.innerHTML=voci.map(([k,n])=>
+    `<button role="tab" aria-selected="${k===areaScelta}" data-a="${k}">${n}</button>`).join("");
+  seg.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+    areaScelta=b.dataset.a; disegnaAree();
+  });
+
+  if(!attive.length){
+    cont.innerHTML='<div class="card">Nessun dato in nessuna area.</div>'; return;
+  }
+
+  // ---- vista "In comune": le onde che corrono su piu' aree insieme --------
+  if(areaScelta==="COMUNE"){
+    const conta={};
+    attive.forEach(a=>perArea[a].forEach(r=>{
+      if(r.quadrante==="Finestra aperta")
+        (conta[r.term]=conta[r.term]||[]).push(NOMI_AREE[a]);
+    }));
+    const comuni=Object.entries(conta).filter(([,v])=>v.length>=2)
+      .sort((x,y)=>y[1].length-x[1].length).slice(0,12);
+    onde.innerHTML=`<div class="card"><div class="occhiello">Crescono e sono poco presidiati in piu' aree insieme</div>
+      <h2>Onde, non mode locali</h2>
+      <p class="small">Un attivo in finestra aperta in una sola area puo' essere una moda passeggera.
+      In due o tre aree contemporaneamente e' una tendenza di fondo: e' qui che ha senso investire su una linea.</p>
+      <div>${comuni.length?comuni.map(([t,ar])=>`<span class="chip"><b>${t}</b> &middot; ${ar.join(", ")}</span>`).join(""):"Con i dati attuali nessun attivo e' in finestra aperta in piu' aree insieme."}</div>
+    </div>`;
+    return;
+  }
+
+  // ---- vista di una singola area ------------------------------------------
+  const a=areaScelta;
+  const R=perArea[a];
+  const intesta=document.createElement("div");
+  intesta.className="intestarea";
+  intesta.innerHTML=`<h2>${NOMI_AREE[a]}</h2><span class="dove">${SOTTO_AREE[a]}</span>`;
+  cont.appendChild(intesta);
+
+  if(!R){
+    const nota=document.createElement("div");
+    nota.className="card";
+    nota.textContent="Quest'area non ha ancora dati. Arrivano col prossimo aggiornamento "+
+      "completo, oppure con Run workflow lanciato a mano su GitHub.";
+    cont.appendChild(nota);
+    return;
+  }
+
+  const punta=R.filter(r=>r.quadrante==="Finestra aperta");
+  const scelte=(punta.length>=3?punta:R).slice(0,3);
+  const cardP=document.createElement("div");
+  cardP.className="card";
+  cardP.innerHTML=`<div class="occhiello">Crescita alta, concorrenza bassa</div>
+    <h2>Su cosa puntare</h2>${schedeScelta(scelte)}`;
+  cont.appendChild(cardP);
+
+  const piu=[...R].sort((x,y)=>y.volume-x.volume).slice(0,8);
+  const cardR=document.createElement("div");
+  cardR.className="card";
+  cardR.innerHTML=`<div class="occhiello">Volume di ricerca oggi</div><h2>Piu' ricercati</h2>`;
+  cardR.appendChild(barChartH(piu.map(r=>r.term), piu.map(r=>r.volume),
+    piu.map((r,i)=>i===0?"#A2C042":"#C9CFC0"), {W:980, rowH:32}));
+  cont.appendChild(cardR);
+}
+
+function disegnaSat(){
+  const t=document.getElementById("tabSat");
+  t.querySelector("thead").innerHTML="<tr><th>Attivo</th><th>Cluster</th><th>Concorrenti in Italia</th></tr>";
+  t.querySelector("tbody").innerHTML=TAXONOMY.map(k=>`<tr><td>${k.term}</td>
+    <td class="small">${CLUSTERS[k.cluster]}</td>
+    <td class="num"><input type="number" min="0" max="99" data-term="${k.term}"
+      value="${S.sat[k.term]??""}"></td></tr>`).join("");
+  t.querySelectorAll("input").forEach(inp=>inp.onchange=()=>{
+    const v=inp.value===""?null:Math.max(0,+inp.value);
+    if(v===null) delete S.sat[inp.dataset.term]; else S.sat[inp.dataset.term]=v;
+    salva(); aggiorna();});
+}
+
+function frase(r){
+  const p=[];
+  if(r.velYoy>300) p.push("un anno fa quasi nessuno la cercava, oggi e' una delle ricerche in piu' rapida ascesa");
+  else if(r.velYoy>25) p.push(`la domanda cresce del ${Math.round(r.velYoy)}% in un anno`);
+  else if(r.velYoy>0) p.push(`la domanda sale del ${Math.round(r.velYoy)}% in un anno`);
+  else p.push("la domanda e' stabile");
+  if(r.competitors===0) p.push("in Italia non lo distribuisce ancora nessuno");
+  else if(r.competitors!==null && r.competitors<=4) p.push(`in Italia lo offrono solo ${r.competitors} distributor${r.competitors===1?"e":"i"}`);
+  else if(r.competitors!==null) p.push(`in Italia lo offrono gia' ${r.competitors} distributori`);
+  if(r.internaRaw>0) p.push(`e i tuoi centri lo hanno chiesto ${r.internaRaw} volt${r.internaRaw===1?"a":"e"} negli ultimi sei mesi`);
+  let t=p[0].charAt(0).toUpperCase()+p[0].slice(1);
+  if(p[1]) t+=", "+p[1];
+  if(p[2]) t+=" "+p[2];
+  return t+".";
+}
+
+function schedeScelta(righe){
+  return '<div class="podio">'+righe.map((r,i)=>`
+    <div class="scelta">
+      <div class="pos">${["Prima scelta","Seconda","Terza"][i]||"Alternativa"}</div>
+      <div class="nome">${r.term}</div>
+      <p class="perche">${frase(r)}</p>
+      ${r.device?`<p class="small" style="margin:-6px 0 12px">Si abbina a ${r.device}.</p>`:""}
+      <div class="dati">
+        <div><b>${r.opportunita}</b><span>punteggio</span></div>
+        <div><b>${r.velYoy>0?"+":""}${Math.round(r.velYoy)}%</b><span>crescita</span></div>
+        <div><b>${r.competitors===null?"—":r.competitors}</b><span>concorrenti</span></div>
+      </div>
+      ${r.reg?`<div class="avviso"><b>Da verificare prima di trattare.</b> ${r.reg}</div>`:""}
+    </div>`).join("")+"</div>";
+}
+
+function blocco(titolo, occhiello, contenuto){
+  return `<div class="blocco"><div class="occhiello">${occhiello}</div>
+    <h2>${titolo}</h2>${contenuto}</div>`;
+}
+
+function disegnaRisposta(){
+  const v=document.getElementById("verdetto");
+  const tutte=filtrate();
+  if(!tutte.length){ v.innerHTML='<div class="card">Nessun dato sufficiente.</div>'; return; }
+  v.innerHTML="";
+
+  for(const set of ["estetica","fitness"]){
+    const R=tutte.filter(r=>r.settore===set);
+    if(!R.length) continue;
+    const nome=SETTORI[set];
+
+    const piu=[...R].sort((a,b)=>b.volume-a.volume).slice(0,8);
+    const cardRic=document.createElement("div");
+    cardRic.className="card";
+    cardRic.innerHTML=`<div class="occhiello">Volume di ricerca oggi</div>
+      <h2>Piu' ricercati nel${set==="estetica"?"l'":" "}${nome}</h2>`;
+    cardRic.appendChild(barChartH(piu.map(r=>r.term), piu.map(r=>r.volume),
+      piu.map((r,i)=>i===0?"#A2C042":"#C9CFC0"), {W:980, rowH:32}));
+    const p1=document.createElement("p"); p1.className="small";
+    p1.style.margin="4px 0 0";
+    p1.textContent=`Cosa cerca il mercato adesso. In testa: ${piu[0].term}.`;
+    cardRic.appendChild(p1);
+
+    const punta=[...R].filter(r=>r.quadrante==="Finestra aperta");
+    const scelte=(punta.length>=3?punta:R).slice(0,3);
+    const cardPun=document.createElement("div");
+    cardPun.className="card";
+    cardPun.innerHTML=`<div class="occhiello">Crescita alta, concorrenza bassa</div>
+      <h2>Su cosa puntare per ${set==="estetica"?"l'Estetica":"il Fitness"}</h2>
+      ${schedeScelta(scelte)}
+      <p class="small" style="margin:0">Non i piu' cercati: i piu' in crescita e meno presidiati.
+      Sono due cose diverse, ed e' qui che si prende il vantaggio.</p>`;
+
+    v.appendChild(cardRic); v.appendChild(cardPun);
+  }
+}
+
+function aggiorna(){
+  RIGHE=calcola();
+  disegnaBanda(); disegnaRisposta(); disegnaAree(); disegnaMappa(); disegnaScheda(); disegnaCluster();
+}
+
+/* ================================================================= CSV */
+function splitCSV(line){
+  const out=[]; let cur="", q=false;
+  for(let i=0;i<line.length;i++){
+    const c=line[i];
+    if(c==='"'){ if(q&&line[i+1]==='"'){cur+='"';i++;} else q=!q; }
+    else if(c===","&&!q){ out.push(cur); cur=""; }
+    else cur+=c;
+  }
+  out.push(cur); return out.map(s=>s.trim());
+}
+
+// Riconosce l'export "Interesse nel tempo" di Google Trends (multiTimeline.csv)
+function importaTrends(testo, nomeFile){
+  const righe=testo.split(/\r?\n/).filter(r=>r.trim());
+  let iDati=-1;
+  for(let i=0;i<righe.length;i++){
+    const c=splitCSV(righe[i]);
+    if(/^\d{4}-\d{2}(-\d{2})?$/.test(c[0])){ iDati=i; break; }
+  }
+  if(iDati<1) return {ok:0, msg:`${nomeFile}: non sembra un export di Google Trends.`};
+
+  const intest=splitCSV(righe[iDati-1]).slice(1)
+    .map(h=>h.replace(/:.*$/,"").trim().toLowerCase());
+
+  const noti=[], ignoti=[];
+  intest.forEach(h=>{ (BY_TERM[h]?noti:ignoti).push(h); });
+  if(!noti.length)
+    return {ok:0, msg:`${nomeFile}: nessun termine riconosciuto (${ignoti.join(", ")}).`};
+
+  if(S.demo){ S.aree={IT:{}}; S.trends=S.aree.IT; S.interna=[]; S.sat={}; S.demo=false; }
+  if(!S.aree) S.aree={};
+  if(!S.aree.IT) S.aree.IT={};
+
+  const letti={};
+  intest.forEach((h,col)=>{
+    if(!BY_TERM[h]) return;
+    const punti=[];
+    for(let i=iDati;i<righe.length;i++){
+      const c=splitCSV(righe[i]);
+      if(!/^\d{4}-\d{2}/.test(c[0])) continue;
+      let raw=(c[col+1]||"").replace("<","").trim();
+      const v=raw===""?null:+raw;
+      if(v===null||isNaN(v)) continue;
+      const w=c[0].length===7 ? c[0]+"-01" : c[0];
+      punti.push({w, v});
+    }
+    if(punti.length) letti[h]=punti;
+  });
+
+  // Riscalatura sul termine di aggancio, cosi' i volumi restano confrontabili
+  let fattore=1, nota="";
+  const primo=!Object.keys(S.aree.IT).length;
+  if(!primo){
+    if(!letti[ANCORA]) nota=` — ATTENZIONE: manca "${ANCORA}", i volumi non sono confrontabili con gli altri gruppi`;
+    else if(S.aree.IT[ANCORA]){
+      const mQ=media(letti[ANCORA].map(x=>x.v));
+      const mR=media(S.aree.IT[ANCORA].map(x=>x.v));
+      if(mQ>0) fattore=mR/mQ;
+    }
+  }
+  Object.entries(letti).forEach(([h,punti])=>{
+    if(h===ANCORA && !primo) return;
+    S.aree.IT[h]= fattore===1 ? punti
+      : punti.map(x=>({w:x.w, v:Math.round(x.v*fattore*10)/10}));
+  });
+  if(S.area==="IT") S.trends=S.aree.IT;
+
+  return {ok:noti.length,
+    msg:`${nomeFile}: importati ${noti.join(", ")}` +
+        (fattore!==1?` (riscalati x${fattore.toFixed(2)})`:"") +
+        (ignoti.length?` — ignorati: ${ignoti.join(", ")}`:"") + nota};
+}
+
+function importaInterna(testo){
+  const righe=testo.split(/\r?\n/).filter(r=>r.trim());
+  const head=splitCSV(righe[0]).map(h=>h.toLowerCase());
+  const idx=n=>head.indexOf(n);
+  const iT=idx("term"), iM=idx("month"), iR=idx("requests"), iQ=idx("quotes");
+  if(iT<0||iM<0) return {ok:0,msg:"Servono almeno le colonne term e month."};
+  const nuove=[], ignoti=new Set();
+  for(let i=1;i<righe.length;i++){
+    const c=splitCSV(righe[i]);
+    const term=(c[iT]||"").toLowerCase();
+    if(!term) continue;
+    if(!BY_TERM[term]){ ignoti.add(term); continue; }
+    nuove.push({term, month:c[iM], requests:+(c[iR]||0)||0, quotes:+(c[iQ]||0)||0});
+  }
+  const chiave=r=>r.term+"|"+r.month;
+  const map=new Map(S.interna.map(r=>[chiave(r),r]));
+  nuove.forEach(r=>map.set(chiave(r),r));
+  S.interna=[...map.values()];
+  return {ok:nuove.length,
+    msg:`Importate ${nuove.length} righe.`+(ignoti.size?` Termini non riconosciuti: ${[...ignoti].join(", ")}`:"")};
+}
+
+/* =============================================================== EVENTI */
+function tab(nome){
+  document.querySelectorAll("nav button").forEach(b=>
+    b.setAttribute("aria-selected", b.dataset.t===nome));
+  document.querySelectorAll(".panel").forEach(p=>
+    p.classList.toggle("on", p.id==="p-"+nome));
+}
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>tab(b.dataset.t));
+
+function collegaDrop(dropId, inputId, gestore){
+  const d=document.getElementById(dropId), inp=document.getElementById(inputId);
+  d.onclick=()=>inp.click();
+  d.ondragover=e=>{e.preventDefault();d.classList.add("over");};
+  d.ondragleave=()=>d.classList.remove("over");
+  d.ondrop=e=>{e.preventDefault();d.classList.remove("over");leggi(e.dataTransfer.files);};
+  inp.onchange=()=>leggi(inp.files);
+  function leggi(files){
+    [...files].forEach(f=>{
+      const fr=new FileReader();
+      fr.onload=()=>{ const r=gestore(fr.result,f.name); log(r.msg);
+        salva(); aggiorna(); };
+      fr.readAsText(f,"utf-8");
+    });
+  }
+}
+collegaDrop("dropTrends","fileTrends",importaTrends);
+collegaDrop("dropInterna","fileInterna",(t)=>importaInterna(t));
+
+document.getElementById("fCluster").innerHTML='<option value="">Tutte le famiglie</option>'+
+  Object.entries(CLUSTERS).map(([k,v])=>`<option value="${k}">${v}</option>`).join("");
+document.getElementById("fCluster").onchange=aggiorna;
+document.getElementById("fSettore").onchange=aggiorna;
+document.getElementById("fReg").onchange=aggiorna;
+document.getElementById("selAttivo").onchange=disegnaScheda;
+
+function scarica(nome, contenuto, tipo){
+  const b=new Blob([contenuto],{type:tipo});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(b); a.download=nome; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
+document.getElementById("scaricaModello").onclick=()=>{
+  const oggi=new Date().toISOString().slice(0,7);
+  scarica("richieste-interne.csv",
+    "term,month,requests,quotes,note\n"+
+    `idroabrasione,${oggi},14,6,richieste post fiera\n`+
+    `pdrn,${oggi},3,0,chiesto da tre centri\n`, "text/csv");
+};
+document.getElementById("esporta").onclick=()=>
+  scarica(`e-beauty-analyst-${new Date().toISOString().slice(0,10)}.json`,
+    JSON.stringify(S), "application/json");
+document.getElementById("importa").onclick=()=>document.getElementById("fileBackup").click();
+document.getElementById("fileBackup").onchange=e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const fr=new FileReader();
+  fr.onload=()=>{ try{ S=JSON.parse(fr.result); salva(); aggiorna();
+    log("Backup importato."); }catch(err){ log("File non valido."); } };
+  fr.readAsText(f);
+};
+document.getElementById("pulisci").onclick=()=>{
+  if(!S.demo){ log("Non ci sono dati dimostrativi da cancellare."); return; }
+  S={trends:{},aree:{IT:{}},area:S.area||"IT",interna:[],sat:{},demo:false,fonte:S.fonte||""}; salva(); aggiorna();
+  log("Dati dimostrativi cancellati. Carica i CSV di Google Trends.");
+};
+document.getElementById("ricarica").onclick=()=>{
+  if(!S.demo && Object.keys(S.trends).length &&
+     !confirm("Questo sostituisce i dati reali con quelli dimostrativi. Procedere?")) return;
+  const f=S.fonte||""; S=generaDemo(); S.fonte=f;
+  salva(); aggiorna(); log("Dati dimostrativi ricaricati.");
+};
+
+function impostaArea(a){
+  S.area=a;
+  S.trends=(S.aree&&S.aree[a])||{};
+  salva(); aggiorna();
+}
+document.getElementById("selArea").onchange=e=>impostaArea(e.target.value);
+
+/* ========================================================= FONTE REMOTA */
+async function scaricaDaFonte(silenzioso){
+  const st=document.getElementById("statoFonte");
+  if(!S.fonte){ if(!silenzioso) st.textContent="Nessun indirizzo collegato."; return; }
+  st.textContent="Scarico i dati...";
+  try{
+    const r=await fetch(S.fonte, {cache:"no-store"});
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    const d=await r.json();
+    const grezze=d.aree || (d.trends ? {IT:d.trends} : null);
+    if(!grezze) throw new Error("file senza dati");
+    const aree={};
+    for(const [a,tr] of Object.entries(grezze)){
+      const validi={};
+      Object.entries(tr||{}).forEach(([t,punti])=>{ if(BY_TERM[t]) validi[t]=punti; });
+      if(Object.keys(validi).length) aree[a]=validi;
+    }
+    if(!Object.keys(aree).length) throw new Error("nessun termine riconosciuto");
+    S.aree=aree;
+    if(!S.aree[S.area]) S.area="IT";
+    S.trends=S.aree[S.area]||{};
+    S.demo=false;
+    S.generatoIl=d.generato||"";
+    salva(); aggiorna();
+    const na=Object.keys(aree).join(", ");
+    st.textContent=`Aggiornato (${na}): ${Object.keys(S.trends).length} attivi nell'area corrente, dati del ${d.generato||"?"}.`;
+  }catch(err){
+    st.textContent="Non sono riuscito a scaricare i dati ("+err.message+
+      "). L'app continua con i dati che ha gia'.";
+  }
+}
+document.getElementById("salvaFonte").onclick=()=>{
+  S.fonte=document.getElementById("fonteUrl").value.trim();
+  salva(); scaricaDaFonte(false);
+};
+document.getElementById("aggiornaOra").onclick=()=>scaricaDaFonte(false);
+
+/* =============================================================== REPORT */
+function vociReport(righe, settore){
+  const R=righe.filter(r=>r.settore===settore);
+  const punta=R.filter(r=>r.quadrante==="Finestra aperta")
+               .sort((a,b)=>b.opportunita-a.opportunita);
+  return (punta.length>=3?punta:R.sort((a,b)=>b.opportunita-a.opportunita)).slice(0,3);
+}
+
+function testoLancio(term, insieme){
+  const prof=stagionalita(term, insieme);
+  if(!prof.length) return "";
+  const picco=prof.indexOf(Math.max(...prof));
+  const prep=(picco+10)%12;   // due mesi prima
+  return `Le ricerche toccano il massimo a <b>${MESI[picco]}</b>: per arrivare puntuali, `+
+         `materiali e offerta vanno pronti entro ${MESI[prep]}.`;
+}
+
+function generaReport(){
+  const oggi=new Date().toLocaleDateString("it-IT",{day:"numeric",month:"long",year:"numeric"});
+  const logo=document.querySelector(".logo-e");
+  let h=`<div class="rtesta">${logo?`<img src="${logo.src}" alt="">`:""}
+    <span class="rtitolo">E-BEAUTY ANALYST &mdash; Report settimanale</span></div>
+    <div class="rdata">Generato il ${oggi}${S.generatoIl?` &middot; dati aggiornati al ${S.generatoIl}`:""}</div>`;
+
+  if(S.demo) h+=`<div class="rdemo">ATTENZIONE: questo report e' costruito su dati dimostrativi,
+    generati artificialmente. Non usarlo per decisioni.</div>`;
+
+  const attive=ORDINE_AREE.filter(a=>S.aree&&S.aree[a]&&Object.keys(S.aree[a]).length);
+  for(const a of attive){
+    const insieme=S.aree[a];
+    const righe=calcola(insieme);
+    const prima=a===attive[0]?" prima":"";
+    h+=`<div class="rarea${prima}"><h2>${NOMI_AREE[a]}</h2><p class="rdove">${SOTTO_AREE[a]}</p>`;
+    for(const [st,nome] of [["estetica","Estetica"],["fitness","Fitness"]]){
+      const voci=vociReport(righe, st);
+      if(!voci.length) continue;
+      h+=`<h3>${nome} &mdash; su cosa puntare</h3>`;
+      voci.forEach((r,i)=>{
+        h+=`<p class="rvoce"><b class="nome">${i+1}. ${r.term}</b><br>`+
+           frase(r)+" "+
+           (r.device?`In cabina si abbina a ${r.device}. `:"")+
+           `<span class="rlancio">${testoLancio(r.term, insieme)}</span>`+
+           (r.reg?`<br><span class="rreg">Da verificare prima di trattare: ${r.reg}</span>`:"")+
+           `</p>`;
+      });
+    }
+    h+=`</div>`;
+  }
+
+  h+=`<p class="rnota">Come leggere questi numeri: la "crescita" confronta lo stesso trimestre con
+  un anno fa (al netto della stagionalita'); i suggerimenti privilegiano cio' che cresce ed e' poco
+  presidiato, non cio' che e' semplicemente piu' cercato. Fonte: Google Trends, serie riallineate su
+  un termine di aggancio comune. I dati misurano le ricerche delle persone, non le vendite: vanno
+  letti insieme alle richieste reali dei centri. Concorrenti censiti manualmente.
+  E-BeautyGroup S.r.l. &middot; uso interno.</p>`;
+
+  document.getElementById("report").innerHTML=h;
+}
+
+document.getElementById("btnStampa").onclick=()=>{
+  generaReport();
+  window.print();
+};
+
+/* ================================================================ AVVIO */
+(async function(){
+  try{ localStorage.removeItem("ebeauty:chiaveIA"); }catch(e){}
+  const trovato=await carica();
+  if(trovato && S.trends && !S.aree) S.aree={IT:S.trends};   // stato salvato vecchio
+  if(!S.area) S.area="IT";
+  if(!trovato || !S.aree || !Object.keys(S.aree).length ||
+     !Object.values(S.aree).some(a=>Object.keys(a||{}).length)){
+    const f=S.fonte||""; S=generaDemo(); S.fonte=f;
+  }
+  S.trends=(S.aree&&S.aree[S.area])||{};
+  document.getElementById("selArea").value=S.area;
+  disegnaSat();
+  aggiorna();
+  // ospitata online accanto a dati.json: si collega da sola, senza configurare nulla
+  if(!S.fonte && location.protocol.indexOf("http")===0) S.fonte="dati.json";
+  if(S.fonte){
+    document.getElementById("fonteUrl").value=S.fonte;
+    scaricaDaFonte(true);
+  }
+})();
+</script>
+</body>
+</html>
