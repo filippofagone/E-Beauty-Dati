@@ -1,4 +1,4 @@
-"""
+  """
 Raccolta automatica per E-Beauty Analyst - versione a tre aree.
 
 Aree raccolte:
@@ -7,7 +7,7 @@ Aree raccolte:
   MONDO = tutto il mondo
 
 Per stare nel piano gratuito di SerpApi: l'Italia viene raccolta ogni
-settimana; Europa e Mondo nelle settimane pari. Il lancio manuale
+settimana; Europa e Mondo il primo lunedi' del mese. Il lancio manuale
 (Run workflow) raccoglie sempre tutto. Le aree non raccolte in un giro
 vengono conservate dal file precedente, mai cancellate.
 """
@@ -123,8 +123,8 @@ def main():
     termini = json.loads((QUI / "termini.json").read_text(encoding="utf-8"))
 
     manuale = os.environ.get("GITHUB_EVENT_NAME", "") == "workflow_dispatch"
-    settimana_pari = date.today().isocalendar()[1] % 2 == 0
-    tutte = manuale or settimana_pari
+    primo_lunedi = date.today().day <= 7
+    tutte = manuale or primo_lunedi
     da_fare = list(AREE) if tutte else ["IT"]
     print("Aree in raccolta questa volta:", ", ".join(da_fare), flush=True)
 
