@@ -1,4 +1,4 @@
-  """
+"""
 Raccolta automatica per E-Beauty Analyst - versione a tre aree.
 
 Aree raccolte:
@@ -128,7 +128,6 @@ def main():
     da_fare = list(AREE) if tutte else ["IT"]
     print("Aree in raccolta questa volta:", ", ".join(da_fare), flush=True)
 
-    # conservo le aree gia' raccolte in passato
     aree_out = {}
     vecchio = QUI / "dati.json"
     if vecchio.exists():
@@ -160,7 +159,7 @@ def main():
         "generato": date.today().isoformat(),
         "ancora": ANCORA,
         "aree": aree_out,
-        "trends": aree_out["IT"],      # compatibilita' con versioni vecchie dell'app
+        "trends": aree_out["IT"],
         "termini_falliti": sorted(set(falliti_tot)),
     }
     vecchio.write_text(json.dumps(uscita, ensure_ascii=False), encoding="utf-8")
